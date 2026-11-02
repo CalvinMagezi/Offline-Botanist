@@ -6,6 +6,8 @@ class PlantLog {
   final List<Sighting> _sightings = [];
   final List<Preparation> _preparations = [];
 
+  PlantLog();
+
   Iterable<Plant> get plants => _plants.values;
 
   void addPlant(Plant plant) {
@@ -43,4 +45,24 @@ class PlantLog {
   /// Preparations of one plant, in the order they were recorded.
   List<Preparation> preparationsOf(String plantId) =>
       _preparations.where((p) => p.plantId == plantId).toList();
+
+  /// Plants and sightings only. Preparations have no JSON form yet.
+  Map<String, dynamic> toJson() => {
+    'plants': [for (final plant in _plants.values) plant.toJson()],
+    'sightings': [for (final sighting in _sightings) sighting.toJson()],
+  };
+
+  /// Rebuilds a log through [addPlant] and [recordSighting], so duplicate
+  /// plant ids and sightings of unknown plants are refused with the same
+  /// errors as the live methods.
+  factory PlantLog.fromJson(Map<String, dynamic> json) {
+    final log = PlantLog();
+    for (final plant in json['plants'] as List<dynamic>) {
+      log.addPlant(Plant.fromJson(plant as Map<String, dynamic>));
+    }
+    for (final sighting in json['sightings'] as List<dynamic>) {
+      log.recordSighting(Sighting.fromJson(sighting as Map<String, dynamic>));
+    }
+    return log;
+  }
 }

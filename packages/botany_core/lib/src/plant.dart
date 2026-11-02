@@ -13,6 +13,18 @@ class Plant {
   final String id;
   final String commonName;
   final String? scientificName;
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'commonName': commonName,
+    'scientificName': scientificName,
+  };
+
+  factory Plant.fromJson(Map<String, dynamic> json) => Plant(
+    id: json['id'] as String,
+    commonName: json['commonName'] as String,
+    scientificName: json['scientificName'] as String?,
+  );
 }
 
 /// One time the user saw or gathered a plant.
@@ -22,6 +34,18 @@ class Sighting {
   final String plantId;
   final DateTime observedAt;
   final String? note;
+
+  Map<String, dynamic> toJson() => {
+    'plantId': plantId,
+    'observedAt': observedAt.toIso8601String(),
+    'note': note,
+  };
+
+  factory Sighting.fromJson(Map<String, dynamic> json) => Sighting(
+    plantId: json['plantId'] as String,
+    observedAt: DateTime.parse(json['observedAt'] as String),
+    note: json['note'] as String?,
+  );
 }
 
 /// How a plant is prepared for use.
