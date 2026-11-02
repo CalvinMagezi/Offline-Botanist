@@ -6,6 +6,8 @@ class PlantLog {
   final List<Sighting> _sightings = [];
   final List<Preparation> _preparations = [];
 
+  PlantLog();
+
   Iterable<Plant> get plants => _plants.values;
 
   void addPlant(Plant plant) {
