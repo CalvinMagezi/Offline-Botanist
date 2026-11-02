@@ -99,8 +99,10 @@ void main() {
       );
     final mintPreps = log.preparationsOf('mint');
     expect(mintPreps.map((p) => p.method), [PreparationMethod.tea]);
-    expect(log.preparationsOf('ginger').single.method,
-        PreparationMethod.decoction);
+    expect(
+      log.preparationsOf('ginger').single.method,
+      PreparationMethod.decoction,
+    );
     expect(log.preparationsOf('nettle'), isEmpty);
   });
 }
