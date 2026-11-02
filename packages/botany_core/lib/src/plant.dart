@@ -23,3 +23,30 @@ class Sighting {
   final DateTime observedAt;
   final String? note;
 }
+
+/// How a plant is prepared for use.
+enum PreparationMethod { tea, infusion, decoction }
+
+/// A way the user prepares one logged plant, with its steps and cautions.
+class Preparation {
+  Preparation({
+    required this.plantId,
+    required this.method,
+    required List<String> steps,
+    List<String> cautions = const [],
+  }) : steps = List.unmodifiable(steps),
+       cautions = List.unmodifiable(cautions) {
+    if (this.steps.every((s) => s.trim().isEmpty)) {
+      throw ArgumentError.value(
+        steps,
+        'steps',
+        'must include at least one step',
+      );
+    }
+  }
+
+  final String plantId;
+  final PreparationMethod method;
+  final List<String> steps;
+  final List<String> cautions;
+}

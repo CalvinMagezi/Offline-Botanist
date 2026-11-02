@@ -4,6 +4,7 @@ import 'plant.dart';
 class PlantLog {
   final Map<String, Plant> _plants = {};
   final List<Sighting> _sightings = [];
+  final List<Preparation> _preparations = [];
 
   Iterable<Plant> get plants => _plants.values;
 
@@ -29,4 +30,17 @@ class PlantLog {
   List<Sighting> sightingsOf(String plantId) =>
       _sightings.where((s) => s.plantId == plantId).toList()
         ..sort((a, b) => b.observedAt.compareTo(a.observedAt));
+
+  /// Records a preparation. A preparation of a plant that is not logged is
+  /// refused, so the log never holds an orphan.
+  void recordPreparation(Preparation preparation) {
+    if (!_plants.containsKey(preparation.plantId)) {
+      throw StateError('no plant with id ${preparation.plantId} is logged');
+    }
+    _preparations.add(preparation);
+  }
+
+  /// Preparations of one plant, in the order they were recorded.
+  List<Preparation> preparationsOf(String plantId) =>
+      _preparations.where((p) => p.plantId == plantId).toList();
 }
