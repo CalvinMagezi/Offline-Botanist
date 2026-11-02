@@ -73,4 +73,18 @@ class Preparation {
   final PreparationMethod method;
   final List<String> steps;
   final List<String> cautions;
+
+  Map<String, dynamic> toJson() => {
+    'plantId': plantId,
+    'method': method.name,
+    'steps': steps,
+    'cautions': cautions,
+  };
+
+  factory Preparation.fromJson(Map<String, dynamic> json) => Preparation(
+    plantId: json['plantId'] as String,
+    method: PreparationMethod.values.byName(json['method'] as String),
+    steps: [for (final s in json['steps'] as List<dynamic>) s as String],
+    cautions: [for (final c in json['cautions'] as List<dynamic>) c as String],
+  );
 }
