@@ -41,6 +41,32 @@ void main() {
     expect(sightings.last.note, isNull);
   });
 
+  test('a preparation survives a JSON round trip unchanged', () {
+    final log = PlantLog()
+      ..addPlant(Plant(id: 'mint', commonName: 'Mint'))
+      ..recordPreparation(
+        Preparation(
+          plantId: 'mint',
+          method: PreparationMethod.tea,
+          steps: ['Steep 5 leaves', 'Cover for 5 minutes'],
+          cautions: ['Avoid in late pregnancy'],
+        ),
+      );
+
+    final encoded = jsonEncode(log.toJson());
+    final restored = PlantLog.fromJson(
+      jsonDecode(encoded) as Map<String, dynamic>,
+    );
+
+    final original = log.preparationsOf('mint').single;
+    final copy = restored.preparationsOf('mint').single;
+    expect(copy.plantId, original.plantId);
+    expect(copy.method, original.method);
+    expect(copy.steps, original.steps);
+    expect(copy.cautions, original.cautions);
+    expect(restored.toJson(), log.toJson());
+  });
+
   test('loading refuses a sighting of an unknown plant', () {
     final json = {
       'plants': <Object>[],

@@ -46,15 +46,19 @@ class PlantLog {
   List<Preparation> preparationsOf(String plantId) =>
       _preparations.where((p) => p.plantId == plantId).toList();
 
-  /// Plants and sightings only. Preparations have no JSON form yet.
+  /// Plants, sightings and preparations.
   Map<String, dynamic> toJson() => {
     'plants': [for (final plant in _plants.values) plant.toJson()],
     'sightings': [for (final sighting in _sightings) sighting.toJson()],
+    'preparations': [
+      for (final preparation in _preparations) preparation.toJson(),
+    ],
   };
 
-  /// Rebuilds a log through [addPlant] and [recordSighting], so duplicate
-  /// plant ids and sightings of unknown plants are refused with the same
-  /// errors as the live methods.
+  /// Rebuilds a log through [addPlant], [recordSighting] and
+  /// [recordPreparation], so duplicate plant ids and records of unknown plants
+  /// are refused with the same errors as the live methods. A missing
+  /// `preparations` key is read as no preparations.
   factory PlantLog.fromJson(Map<String, dynamic> json) {
     final log = PlantLog();
     for (final plant in json['plants'] as List<dynamic>) {
@@ -62,6 +66,12 @@ class PlantLog {
     }
     for (final sighting in json['sightings'] as List<dynamic>) {
       log.recordSighting(Sighting.fromJson(sighting as Map<String, dynamic>));
+    }
+    for (final preparation
+        in (json['preparations'] as List<dynamic>?) ?? const <dynamic>[]) {
+      log.recordPreparation(
+        Preparation.fromJson(preparation as Map<String, dynamic>),
+      );
     }
     return log;
   }
